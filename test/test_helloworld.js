@@ -1,3 +1,6 @@
+// truffle-assertions는 npm을 이용하여 설치한다
+// npm install --save truffle-assertions
+const truffleAssert = require('truffle-assertions');
 const helloWorld = artifacts.require("HelloWorld");
 
 contract("HelloWorld", accounts => {
@@ -22,14 +25,9 @@ contract("HelloWorld", accounts => {
   });
 
   it("should throw exception", async () => {
-
-    // 컨트랙트에서 에러 발생 시 catch 에서 에러 메시지를 받은 후 처리
-    try {
-      await this.instance.errorOccur(0, {from: accounts[0]})
-    } catch ({message}) {
-      const ERROR_BASE_MSG = "Returned error: VM Exception while processing transaction: revert "
-      assert.include(message, `${ERROR_BASE_MSG}${"hello world error"}`);
-    }
-
+    await truffleAssert.reverts(
+      this.instance.errorOccur(0, {from: accounts[0]}),
+      "hello world error"
+    )
   });
 })
